@@ -3,4 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools" tools:context=".NoteListActivity">
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
         android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/new_file01" android:title="New file"
+        android:orderInCategory="101" app:showAsAction="never" />
+    <item android:id="@+id/import01" android:title="import"
+        android:orderInCategory="102" app:showAsAction="never" />
+
 </menu>
