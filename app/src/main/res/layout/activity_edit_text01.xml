@@ -7,7 +7,8 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:orientation="vertical"
     tools:context="com.example.mstkwachi.testapp03.EditText01Activity"
-    android:weightSum="1">
+    android:weightSum="1"
+    android:fitsSystemWindows="true">
 
     <EditText
         android:layout_width="match_parent"
@@ -15,13 +16,15 @@
         android:inputType="textMultiLine"
         android:ems="10"
         android:id="@+id/edit_text01_txtEdit"
-        android:layout_weight="0.89" />
+        android:minLines="5"
+        android:gravity="top|left"
+        android:layout_weight="1"
+        android:scrollbars="vertical" />
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.04">
+        android:layout_height="wrap_content">
 
         <Button
             android:layout_width="wrap_content"
