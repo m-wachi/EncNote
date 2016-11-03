@@ -38,27 +38,28 @@ public class EditText01Activity extends AppCompatActivity
         Intent intent = getIntent();
         fileName = intent.getStringExtra(Constants.INTENT_KEY_FILENAME);
         editProc = intent.getIntExtra(Constants.INTENT_KEY_EDITPROC, Constants.INTENT_VAL_EDITPROC_NEW);
-        Log.d("TestApp03", "onCreate fileName=" + fileName);
+        Log.d(Constants.LOG_TAG, "onCreate fileName=" + fileName);
 
+        EditText editText = (EditText) findViewById(R.id.edit_text01_txtEdit);
         try {
             String content = "";
             if (editProc == Constants.INTENT_VAL_EDITPROC_OPEN) {
                 content = loadFile(fileName);
             }
-            EditText editText = (EditText) findViewById(R.id.edit_text01_txtEdit);
             editText.setText(content);
 
         } catch (Exception e) {
             //e.printStackTrace();
-            Log.e("TestApp01", "loadFile Error", e);
+            Log.e(Constants.LOG_TAG, "loadFile Error", e);
+            editText.setText("Error: " + e.toString());
         }
 
 
     }
 
     public void ok(View view) {
-        Log.d("TestApp03", "EditText01Activity.Ok start.");
-        Log.d("TestApp03", "fileName=" + fileName);
+        Log.d(Constants.LOG_TAG, "EditText01Activity.Ok start.");
+        Log.d(Constants.LOG_TAG, "fileName=" + fileName);
 
         ConfirmDialogFragment cdf = new ConfirmDialogFragment();
         cdf.show(getFragmentManager(), "confirm saving");
@@ -66,7 +67,7 @@ public class EditText01Activity extends AppCompatActivity
     }
 
     public void cancel(View view) {
-        Log.d("TestApp03", "EditText01Activity.cancel start.");
+        Log.d(Constants.LOG_TAG, "EditText01Activity.cancel start.");
             //- ただの読み込みはできているので、復号化すること -> not yet
             //- readLineではなく、もっと丁寧な処理にすることを次にやる -> done.
         finish();
@@ -74,31 +75,35 @@ public class EditText01Activity extends AppCompatActivity
 
     private String loadFile(String filename) throws Exception {
 
-        String filePath = Environment.getExternalStorageDirectory() + "/TestApp03/" + filename;
+        String filePath = Environment.getExternalStorageDirectory() + "/" + Constants.BASE_DATA_DIR + "/" + filename;
         File file = new File(filePath);
-            FileInputStream fis = new FileInputStream(file);
-            InputStreamReader isr = new InputStreamReader(fis, "UTF-8");
-            BufferedReader br = new BufferedReader(isr);
+        FileInputStream fis = new FileInputStream(file);
 
-            char[] buff = new char[1024];
-            int retRead;
-            StringBuffer strBuff = new StringBuffer();
+        InputStreamReader isr = new InputStreamReader(fis, "UTF-8");
+        BufferedReader br = new BufferedReader(isr);
 
+        char[] buff = new char[1024];
+
+        int retRead;
+        StringBuffer strBuff = new StringBuffer();
+
+        retRead = br.read(buff, 0, 1024);
+        while(0 <= retRead) {
+            strBuff.append(buff, 0, retRead);
             retRead = br.read(buff, 0, 1024);
-            while(0 <= retRead) {
-                strBuff.append(buff, 0, retRead);
-                retRead = br.read(buff, 0, 1024);
-            }
-            br.close();
+        }
+        br.close();
 
-            String deStr = MyCrypto.decrypt(SEED, strBuff.toString());
+        //String deStr = MyCrypto.decrypt(SEED, strBuff.toString());
+        MyCrypto2 crypt = new MyCrypto2(SEED);
+        String deStr = crypt.decrypt(strBuff.toString());
 
-            return deStr;
+        return deStr;
 
     }
 
     private void saveFile(String filename){
-        String filePath = Environment.getExternalStorageDirectory() + "/TestApp03/" + filename;
+        String filePath = Environment.getExternalStorageDirectory() + "/" + Constants.BASE_DATA_DIR + "/" + filename;
         File file = new File(filePath);
         file.getParentFile().mkdir();
 
@@ -113,12 +118,14 @@ public class EditText01Activity extends AppCompatActivity
 
             String plainStr = ((EditText) findViewById(R.id.edit_text01_txtEdit)).getText().toString();
 
-            String encStr = MyCrypto.encrypt(SEED, plainStr);
+            //String encStr = MyCrypto.encrypt(SEED, plainStr);
+            MyCrypto2 crypt = new MyCrypto2(SEED);
+            String encStr = crypt.encrypt(plainStr);
             bw.write(encStr);
             bw.flush();
             bw.close();
         } catch (Exception e) {
-            Log.e("TestApp03", filePath + ": Error!!", e);
+            Log.e(Constants.LOG_TAG, filePath + ": Error!!", e);
             //EditText txtEdit = (EditText) findViewById(R.id.edit_text01_txtEdit);
             //txtEdit.setText(filePath + ": Error!!" + e.getLocalizedMessage());
         }

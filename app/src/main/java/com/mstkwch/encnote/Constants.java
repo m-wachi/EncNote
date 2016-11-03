@@ -11,5 +11,7 @@ public class Constants {
     public static final int INTENT_VAL_EDITPROC_OPEN = 2;
 
 
-    public static final String LOG_TAG = "TestApp03";
+    public static final String LOG_TAG = "EncNote";
+
+    public static final String BASE_DATA_DIR = "EncNote";
 }

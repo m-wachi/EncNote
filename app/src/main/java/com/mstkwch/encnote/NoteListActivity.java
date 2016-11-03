@@ -44,10 +44,10 @@ public class NoteListActivity extends AppCompatActivity
         mMessageClickHandler = new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView parent, View view, int position, long id) {
-                Log.d("TestApp03", "hello, listview-item is clicked.");
+                Log.d(Constants.LOG_TAG, "hello, listview-item is clicked.");
                 //String fileName =  arrayAdapter.getItem(position);
                 String fileName = lstFile[position];
-                Log.d("TestApp03", "item pos=" + String.valueOf(position) + ", value=" + fileName);
+                Log.d(Constants.LOG_TAG, "item pos=" + String.valueOf(position) + ", value=" + fileName);
                 Intent intent = new Intent(NoteListActivity.this, EditText01Activity.class);
                 intent.putExtra(Constants.INTENT_KEY_FILENAME, fileName);
                 intent.putExtra(Constants.INTENT_KEY_EDITPROC, Constants.INTENT_VAL_EDITPROC_OPEN);
@@ -92,12 +92,12 @@ public class NoteListActivity extends AppCompatActivity
      * @return
      */
     private String[] listAppDir() {
-        String appDirPath = Environment.getExternalStorageDirectory() + "/TestApp03";
+        String appDirPath = Environment.getExternalStorageDirectory() + "/" + Constants.BASE_DATA_DIR;
 
         File appDir = new File(appDirPath);
         if (!appDir.exists()) {
             if (appDir.mkdir()) {
-                Log.i("TestApp03", "cannot create " + appDirPath );
+                Log.i(Constants.LOG_TAG, "cannot create " + appDirPath );
             }
         }
 
