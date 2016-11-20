@@ -48,7 +48,7 @@ public class NoteListActivity extends AppCompatActivity
                 //String fileName =  arrayAdapter.getItem(position);
                 String fileName = lstFile[position];
                 Log.d(Constants.LOG_TAG, "item pos=" + String.valueOf(position) + ", value=" + fileName);
-                Intent intent = new Intent(NoteListActivity.this, EditText01Activity.class);
+                Intent intent = new Intent(NoteListActivity.this, EditText02Activity.class);
                 intent.putExtra(Constants.INTENT_KEY_FILENAME, fileName);
                 intent.putExtra(Constants.INTENT_KEY_EDITPROC, Constants.INTENT_VAL_EDITPROC_OPEN);
 
@@ -81,6 +81,9 @@ public class NoteListActivity extends AppCompatActivity
             Log.d(Constants.LOG_TAG, "menu new file01 click.");
             EditFileNameDialogFragment dialog = new EditFileNameDialogFragment();
             dialog.show(getFragmentManager(), "EditFileNameDialogFragment");
+        } else if (id == R.id.export01) {
+            Log.d(Constants.LOG_TAG, "menu export01 click.");
+            exportToFile();
         }
 
         return super.onOptionsItemSelected(item);
@@ -151,7 +154,7 @@ public class NoteListActivity extends AppCompatActivity
         String fileName = efdlg.getFilename();
         Log.d(Constants.LOG_TAG, "fileName=" + fileName);
 
-        Intent intent = new Intent(NoteListActivity.this, EditText01Activity.class);
+        Intent intent = new Intent(NoteListActivity.this, EditText02Activity.class);
         intent.putExtra(Constants.INTENT_KEY_FILENAME, fileName);
         intent.putExtra(Constants.INTENT_KEY_EDITPROC, Constants.INTENT_VAL_EDITPROC_NEW);
         startActivity(intent);
@@ -164,6 +167,8 @@ public class NoteListActivity extends AppCompatActivity
         //finish();
     }
 
+    protected void exportToFile() {
 
+    }
 
 }

@@ -1,0 +1,7 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" tools:context=".EditText02Activity">
+    <item android:id="@+id/export01" android:title="export"
+        android:orderInCategory="103" app:showAsAction="never" />
+
+</menu>
