@@ -27,7 +27,7 @@ public class EditText02Activity extends AppCompatActivity
 
     private static final String SEED = "ABCDEF";
 
-    private String fileName;
+    private String fileNameBody;
     private int editProc;
 
     @Override
@@ -47,15 +47,15 @@ public class EditText02Activity extends AppCompatActivity
         });
 
         Intent intent = getIntent();
-        fileName = intent.getStringExtra(Constants.INTENT_KEY_FILENAME);
+        fileNameBody = intent.getStringExtra(Constants.INTENT_KEY_FILENAME);
         editProc = intent.getIntExtra(Constants.INTENT_KEY_EDITPROC, Constants.INTENT_VAL_EDITPROC_NEW);
-        Log.d(Constants.LOG_TAG, "onCreate fileName=" + fileName);
+        Log.d(Constants.LOG_TAG, "onCreate fileName=" + fileNameBody);
 
         EditText editText = (EditText) findViewById(R.id.edit_text02_txtEdit);
         try {
             String content = "";
             if (editProc == Constants.INTENT_VAL_EDITPROC_OPEN) {
-                content = loadFile(fileName);
+                content = loadFile(fileNameBody + "." + Constants.DEFAULT_FILE_EXT);
             }
             editText.setText(content);
 
@@ -83,6 +83,13 @@ public class EditText02Activity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.export01) {
             Log.d(Constants.LOG_TAG, "menu export01 click.");
+
+            String plainStr = ((EditText) findViewById(R.id.edit_text02_txtEdit)).getText().toString();
+
+            //保存
+            saveFile(fileNameBody + "_plain.txt", plainStr);
+
+
             return true;
         }
 
@@ -91,7 +98,7 @@ public class EditText02Activity extends AppCompatActivity
 
     public void ok(View view) {
         Log.d(Constants.LOG_TAG, "EditText02Activity.Ok start.");
-        Log.d(Constants.LOG_TAG, "fileName=" + fileName);
+        Log.d(Constants.LOG_TAG, "fileName=" + fileNameBody);
 
         ConfirmDialogFragment cdf = new ConfirmDialogFragment();
         cdf.show(getFragmentManager(), "confirm saving");
@@ -134,26 +141,18 @@ public class EditText02Activity extends AppCompatActivity
 
     }
 
-    private void saveFile(String filename){
+    private void saveFile(String filename, String contents){
         String filePath = Environment.getExternalStorageDirectory() + "/" + Constants.BASE_DATA_DIR + "/" + filename;
         File file = new File(filePath);
         file.getParentFile().mkdir();
 
         FileOutputStream fos;
         try {
-            //fos = new FileOutputStream(file, true);
             fos = new FileOutputStream(file);
             OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
             BufferedWriter bw = new BufferedWriter(osw);
-            //EditText txtEdit = (EditText) findViewById(R.id.my2nd_txtTextBody);
-            //txtEdit.setText(filePath);
 
-            String plainStr = ((EditText) findViewById(R.id.edit_text02_txtEdit)).getText().toString();
-
-            //String encStr = MyCrypto.encrypt(SEED, plainStr);
-            MyCrypto2 crypt = new MyCrypto2(SEED);
-            String encStr = crypt.encrypt(plainStr);
-            bw.write(encStr);
+            bw.write(contents);
             bw.flush();
             bw.close();
         } catch (Exception e) {
@@ -167,7 +166,16 @@ public class EditText02Activity extends AppCompatActivity
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
         Log.d(Constants.LOG_TAG, "EditText02Activity.onDialogPositiveClick start.");
-        saveFile(fileName);
+
+        //編集内容を取りだす
+        String plainStr = ((EditText) findViewById(R.id.edit_text02_txtEdit)).getText().toString();
+
+        //暗号化処理
+        MyCrypto2 crypt = new MyCrypto2(SEED);
+        String encStr = crypt.encrypt(plainStr);
+
+        //保存
+        saveFile(fileNameBody + "." + Constants.DEFAULT_FILE_EXT, encStr);
 
         finish();
     }

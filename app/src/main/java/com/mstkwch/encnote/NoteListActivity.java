@@ -17,11 +17,12 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.io.File;
+import java.io.FilenameFilter;
 
 public class NoteListActivity extends AppCompatActivity
         implements EditFileNameDialogFragment.EditFileNameDialogListener {
 
-    private  String[] lstFile;
+    private  String[] lstFileNameBody;
     private AdapterView.OnItemClickListener mMessageClickHandler = null;
 
     @Override
@@ -46,7 +47,7 @@ public class NoteListActivity extends AppCompatActivity
             public void onItemClick(AdapterView parent, View view, int position, long id) {
                 Log.d(Constants.LOG_TAG, "hello, listview-item is clicked.");
                 //String fileName =  arrayAdapter.getItem(position);
-                String fileName = lstFile[position];
+                String fileName = lstFileNameBody[position];
                 Log.d(Constants.LOG_TAG, "item pos=" + String.valueOf(position) + ", value=" + fileName);
                 Intent intent = new Intent(NoteListActivity.this, EditText02Activity.class);
                 intent.putExtra(Constants.INTENT_KEY_FILENAME, fileName);
@@ -104,7 +105,31 @@ public class NoteListActivity extends AppCompatActivity
             }
         }
 
-        return appDir.list();
+        FilenameFilter fl = new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String filename) {
+                int index = filename.lastIndexOf(".");//拡張子の"."を探す
+
+                //"."以下の文字列を取り出して全て小文字に
+                String ext = filename.substring(index+1).toLowerCase();
+                //拡張子が"txt"と一致すれば取り出す
+                if(ext.equals(Constants.DEFAULT_FILE_EXT) == true) {
+                    return true;
+                }
+                //それ以外のファイルはリストアップしない
+                return false;
+
+            }
+        };
+
+        String[] lstFile = appDir.list(fl);
+        String [] lstTitle = new String[lstFile.length];
+
+        for (int i=0; i<lstFile.length; i++) {
+            lstTitle[i] = lstFile[i].replace("." + Constants.DEFAULT_FILE_EXT, "");
+        }
+
+        return lstTitle;
     }
     /* Checks if external storage is available for read and write */
     public boolean isExternalStorageWritable() {
@@ -121,18 +146,18 @@ public class NoteListActivity extends AppCompatActivity
         Log.d(Constants.LOG_TAG, "MainActivity.onResume()");
         //ここで一覧の内容を再検索、再表示
         //List<String> lstFilePath = null;
-        //String[] lstFile = null;
+        //String[] lstFileNameBody = null;
         if (isExternalStorageWritable()) {
-            lstFile = listAppDir();
+            lstFileNameBody = listAppDir();
         } else {
-            lstFile = new String[0];
+            lstFileNameBody = new String[0];
         }
 
         //ArrayAdapter<String> arrayAdapter
         //        = new ArrayAdapter<String>( this, R.layout.content_main_rowitem, (String[])lstFilePath.toArray(new String[lstFilePath.size()]) );
 
         final ArrayAdapter<String> arrayAdapter
-                = new ArrayAdapter<String>( this, R.layout.content_note_list_rowitem, lstFile);
+                = new ArrayAdapter<String>( this, R.layout.content_note_list_rowitem, lstFileNameBody);
 
         ListView listVw = (ListView) findViewById(R.id.content_main_listView);
         listVw.setAdapter(arrayAdapter);
@@ -151,11 +176,11 @@ public class NoteListActivity extends AppCompatActivity
         String fileName = eText.getText().toString();
         */
         EditFileNameDialogFragment efdlg = (EditFileNameDialogFragment) dialog;
-        String fileName = efdlg.getFilename();
-        Log.d(Constants.LOG_TAG, "fileName=" + fileName);
+        String fileNameBody = efdlg.getFilename();
+        Log.d(Constants.LOG_TAG, "fileName=" + fileNameBody);
 
         Intent intent = new Intent(NoteListActivity.this, EditText02Activity.class);
-        intent.putExtra(Constants.INTENT_KEY_FILENAME, fileName);
+        intent.putExtra(Constants.INTENT_KEY_FILENAME, fileNameBody);
         intent.putExtra(Constants.INTENT_KEY_EDITPROC, Constants.INTENT_VAL_EDITPROC_NEW);
         startActivity(intent);
         // finish();

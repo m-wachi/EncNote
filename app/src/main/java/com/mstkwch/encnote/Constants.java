@@ -4,6 +4,8 @@ package com.mstkwch.encnote;
  * Created by m.wati on 2016/09/02.
  */
 public class Constants {
+    public static final String DEFAULT_FILE_EXT = "encn";
+
     public static final String INTENT_KEY_FILENAME = "com.example.mstkwachi.testapp03.file";
     public static final String INTENT_KEY_EDITPROC = "com.example.mstkwachi.testapp03.editProc";
 
