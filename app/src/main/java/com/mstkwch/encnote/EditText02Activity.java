@@ -54,14 +54,19 @@ public class EditText02Activity extends AppCompatActivity
         EditText editText = (EditText) findViewById(R.id.edit_text02_txtEdit);
         try {
             String content = "";
-            if (editProc == Constants.INTENT_VAL_EDITPROC_OPEN) {
-                content = loadFile(fileNameBody + "." + Constants.DEFAULT_FILE_EXT);
+            switch (editProc) {
+                case Constants.INTENT_VAL_EDITPROC_OPEN:
+                    content = loadEncFile(fileNameBody + "." + Constants.DEFAULT_FILE_EXT);
+                case Constants.INTENT_VAL_EDITPROC_IMPORT:
+                    //ここにplain-textを読み込む処理を入れる
             }
+//            if (editProc == Constants.INTENT_VAL_EDITPROC_OPEN) {
+//            }
             editText.setText(content);
 
         } catch (Exception e) {
             //e.printStackTrace();
-            Log.e(Constants.LOG_TAG, "loadFile Error", e);
+            Log.e(Constants.LOG_TAG, "loadEncFile Error", e);
             editText.setText("Error: " + e.toString());
         }
 
@@ -112,9 +117,43 @@ public class EditText02Activity extends AppCompatActivity
         finish();
     }
 
-    private String loadFile(String filename) throws Exception {
+
+    /**
+     * @param filePath
+     * @return
+     * @throws Exception
+     */
+    private String loadFileRaw(String filePath) throws Exception {
+        File file = new File(filePath);
+        FileInputStream fis = new FileInputStream(file);
+
+        InputStreamReader isr = new InputStreamReader(fis, "UTF-8");
+        BufferedReader br = new BufferedReader(isr);
+
+        char[] buff = new char[1024];
+
+        int retRead;
+        StringBuffer strBuff = new StringBuffer();
+
+        retRead = br.read(buff, 0, 1024);
+        while (0 <= retRead) {
+            strBuff.append(buff, 0, retRead);
+            retRead = br.read(buff, 0, 1024);
+        }
+        br.close();
+
+        return strBuff.toString();
+    }
+
+    private String loadEncFile(String filename) throws Exception {
 
         String filePath = Environment.getExternalStorageDirectory() + "/" + Constants.BASE_DATA_DIR + "/" + filename;
+
+        //RAISE EXCEPTION NO_SUCH_FIELD_ERROR
+        //File exPubDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+        //Log.d(Constants.LOG_TAG, "exPubDir=" + exPubDir.getAbsolutePath());
+
+        /*
         File file = new File(filePath);
         FileInputStream fis = new FileInputStream(file);
 
@@ -132,10 +171,13 @@ public class EditText02Activity extends AppCompatActivity
             retRead = br.read(buff, 0, 1024);
         }
         br.close();
+        */
+        String encContents = loadFileRaw(filePath);
+
 
         //String deStr = MyCrypto.decrypt(SEED, strBuff.toString());
         MyCrypto2 crypt = new MyCrypto2(SEED);
-        String deStr = crypt.decrypt(strBuff.toString());
+        String deStr = crypt.decrypt(encContents);
 
         return deStr;
 

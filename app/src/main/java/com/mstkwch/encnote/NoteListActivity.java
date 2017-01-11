@@ -25,6 +25,8 @@ public class NoteListActivity extends AppCompatActivity
     private  String[] lstFileNameBody;
     private AdapterView.OnItemClickListener mMessageClickHandler = null;
 
+    static final int REQ_CODE = 123;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,9 +84,14 @@ public class NoteListActivity extends AppCompatActivity
             Log.d(Constants.LOG_TAG, "menu new file01 click.");
             EditFileNameDialogFragment dialog = new EditFileNameDialogFragment();
             dialog.show(getFragmentManager(), "EditFileNameDialogFragment");
-        } else if (id == R.id.export01) {
-            Log.d(Constants.LOG_TAG, "menu export01 click.");
-            exportToFile();
+        } else if (id == R.id.import01) {
+            Log.d(Constants.LOG_TAG, "menu import01 click.");
+
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.setType("file/*");
+            startActivityForResult(intent, REQ_CODE);
+
+            //exportToFile();
         }
 
         return super.onOptionsItemSelected(item);
@@ -140,6 +147,19 @@ public class NoteListActivity extends AppCompatActivity
         return false;
     }
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d(Constants.LOG_TAG, "NoteListActivity.onActivityResult()");
+
+        if (requestCode == REQ_CODE ) {
+            if (resultCode == RESULT_OK) {
+                String s = data.getDataString();
+                Log.d(Constants.LOG_TAG, "data.getDataString()=" + s);
+            }
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -190,10 +210,6 @@ public class NoteListActivity extends AppCompatActivity
     public void onDialogNegativeClick(DialogFragment dialog) {
         Log.d(Constants.LOG_TAG, "MainActivity.onDialogNegativeClick start.");
         //finish();
-    }
-
-    protected void exportToFile() {
-
     }
 
 }

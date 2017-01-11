@@ -11,6 +11,7 @@ public class Constants {
 
     public static final int INTENT_VAL_EDITPROC_NEW = 1;
     public static final int INTENT_VAL_EDITPROC_OPEN = 2;
+    public static final int INTENT_VAL_EDITPROC_IMPORT = 3;
 
 
     public static final String LOG_TAG = "EncNote";
