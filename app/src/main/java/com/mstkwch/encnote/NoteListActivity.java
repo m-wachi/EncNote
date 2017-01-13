@@ -25,6 +25,7 @@ public class NoteListActivity extends AppCompatActivity
     private  String[] lstFileNameBody;
     private AdapterView.OnItemClickListener mMessageClickHandler = null;
 
+    private int selectedMenuId;
     static final int REQ_CODE = 123;
 
     @Override
@@ -70,6 +71,12 @@ public class NoteListActivity extends AppCompatActivity
         return true;
     }
 
+
+    /**
+     * メニューハンドラ
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -77,6 +84,7 @@ public class NoteListActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        selectedMenuId = id;
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
@@ -156,6 +164,18 @@ public class NoteListActivity extends AppCompatActivity
             if (resultCode == RESULT_OK) {
                 String s = data.getDataString();
                 Log.d(Constants.LOG_TAG, "data.getDataString()=" + s);
+
+                EditFileNameDialogFragment dialog = new EditFileNameDialogFragment();
+                dialog.show(getFragmentManager(), "EditFileNameDialogFragment");
+
+                /*
+                String importFilePath = "/mnt/sdcard/Download/importTest01.txt";
+                Intent intent = new Intent(NoteListActivity.this, EditText02Activity.class);
+                intent.putExtra(Constants.INTENT_KEY_FILENAME, importFilePath);
+                intent.putExtra(Constants.INTENT_KEY_EDITPROC, Constants.INTENT_VAL_EDITPROC_IMPORT);
+                startActivity(intent);
+                */
+
             }
         }
     }
@@ -184,6 +204,10 @@ public class NoteListActivity extends AppCompatActivity
 
     }
 
+    /**
+     * EditFileNameDialogのＯＫボタンイベントハンドラ
+     * @param dialog
+     */
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
         Log.d(Constants.LOG_TAG, "MainActivity.onDialogPositiveClick start.");
@@ -200,8 +224,21 @@ public class NoteListActivity extends AppCompatActivity
         Log.d(Constants.LOG_TAG, "fileName=" + fileNameBody);
 
         Intent intent = new Intent(NoteListActivity.this, EditText02Activity.class);
-        intent.putExtra(Constants.INTENT_KEY_FILENAME, fileNameBody);
-        intent.putExtra(Constants.INTENT_KEY_EDITPROC, Constants.INTENT_VAL_EDITPROC_NEW);
+
+
+        switch (selectedMenuId) {
+            case R.id.new_file01:
+                intent.putExtra(Constants.INTENT_KEY_FILENAME, fileNameBody);
+                intent.putExtra(Constants.INTENT_KEY_EDITPROC, Constants.INTENT_VAL_EDITPROC_NEW);
+                break;
+            case R.id.import01:
+                String importFilePath = "/mnt/sdcard/Download/importTest01.txt";
+                //intent.putExtra(Constants.INTENT_KEY_FILENAME, fileNameBody);
+                intent.putExtra(Constants.INTENT_KEY_FILENAME, importFilePath);
+                intent.putExtra(Constants.INTENT_KEY_EDITPROC, Constants.INTENT_VAL_EDITPROC_IMPORT);
+                break;
+        }
+
         startActivity(intent);
         // finish();
     }

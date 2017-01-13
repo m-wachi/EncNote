@@ -57,8 +57,14 @@ public class EditText02Activity extends AppCompatActivity
             switch (editProc) {
                 case Constants.INTENT_VAL_EDITPROC_OPEN:
                     content = loadEncFile(fileNameBody + "." + Constants.DEFAULT_FILE_EXT);
+                    break;
                 case Constants.INTENT_VAL_EDITPROC_IMPORT:
                     //ここにplain-textを読み込む処理を入れる
+                    String importFilePath;
+                    importFilePath = fileNameBody;
+                    fileNameBody = "importedFile01";
+                    content = loadFileRaw(importFilePath);
+                    break;
             }
 //            if (editProc == Constants.INTENT_VAL_EDITPROC_OPEN) {
 //            }
