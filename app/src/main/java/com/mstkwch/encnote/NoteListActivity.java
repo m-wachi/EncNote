@@ -28,6 +28,8 @@ public class NoteListActivity extends AppCompatActivity
     private int selectedMenuId;
     static final int REQ_CODE = 123;
 
+    private String importFilePath = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -163,7 +165,10 @@ public class NoteListActivity extends AppCompatActivity
         if (requestCode == REQ_CODE ) {
             if (resultCode == RESULT_OK) {
                 String s = data.getDataString();
-                Log.d(Constants.LOG_TAG, "data.getDataString()=" + s);
+
+                //file://を外す処理を組み込む
+                importFilePath = s;
+                Log.d(Constants.LOG_TAG, "data.getDataString()=" + importFilePath);
 
                 EditFileNameDialogFragment dialog = new EditFileNameDialogFragment();
                 dialog.show(getFragmentManager(), "EditFileNameDialogFragment");
@@ -232,10 +237,10 @@ public class NoteListActivity extends AppCompatActivity
                 intent.putExtra(Constants.INTENT_KEY_EDITPROC, Constants.INTENT_VAL_EDITPROC_NEW);
                 break;
             case R.id.import01:
-                String importFilePath = "/mnt/sdcard/Download/importTest01.txt";
-                //intent.putExtra(Constants.INTENT_KEY_FILENAME, fileNameBody);
-                intent.putExtra(Constants.INTENT_KEY_FILENAME, importFilePath);
+                //String importFilePath = "/mnt/sdcard/Download/importTest01.txt";
+                intent.putExtra(Constants.INTENT_KEY_FILENAME, fileNameBody);
                 intent.putExtra(Constants.INTENT_KEY_EDITPROC, Constants.INTENT_VAL_EDITPROC_IMPORT);
+                intent.putExtra(Constants.INTENT_KEY_IMPORTPATH, importFilePath);
                 break;
         }
 

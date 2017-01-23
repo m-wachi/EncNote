@@ -113,12 +113,9 @@ public class EditText01Activity extends AppCompatActivity
             fos = new FileOutputStream(file);
             OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
             BufferedWriter bw = new BufferedWriter(osw);
-            //EditText txtEdit = (EditText) findViewById(R.id.my2nd_txtTextBody);
-            //txtEdit.setText(filePath);
 
             String plainStr = ((EditText) findViewById(R.id.edit_text01_txtEdit)).getText().toString();
 
-            //String encStr = MyCrypto.encrypt(SEED, plainStr);
             MyCrypto2 crypt = new MyCrypto2(SEED);
             String encStr = crypt.encrypt(plainStr);
             bw.write(encStr);
@@ -134,7 +131,7 @@ public class EditText01Activity extends AppCompatActivity
 
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
-        Log.d("TestApp03", "EditText01Activity.onDialogPositiveClick start.");
+        Log.d(Constants.LOG_TAG, "EditText01Activity.onDialogPositiveClick start.");
         saveFile(fileName);
 
         finish();
@@ -142,7 +139,7 @@ public class EditText01Activity extends AppCompatActivity
 
     @Override
     public void onDialogNegativeClick(DialogFragment dialog) {
-        Log.d("TestApp03", "EditText01Activity.onDialogNegativeClick start.");
+        Log.d(Constants.LOG_TAG, "EditText01Activity.onDialogNegativeClick start.");
         finish();
     }
 }

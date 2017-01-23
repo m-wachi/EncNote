@@ -51,7 +51,5 @@
                 android:onClick="cancel"/>
         </LinearLayout>
 
-
-
     </LinearLayout>
 </RelativeLayout>

@@ -37,19 +37,20 @@ public class EditText02Activity extends AppCompatActivity
         Toolbar toolbar2 = (Toolbar) findViewById(R.id.toolbar2);
         setSupportActionBar(toolbar2);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+//            }
+//        });
 
         Intent intent = getIntent();
         fileNameBody = intent.getStringExtra(Constants.INTENT_KEY_FILENAME);
         editProc = intent.getIntExtra(Constants.INTENT_KEY_EDITPROC, Constants.INTENT_VAL_EDITPROC_NEW);
         Log.d(Constants.LOG_TAG, "onCreate fileName=" + fileNameBody);
+        setTitle(fileNameBody);
 
         EditText editText = (EditText) findViewById(R.id.edit_text02_txtEdit);
         try {
@@ -60,9 +61,9 @@ public class EditText02Activity extends AppCompatActivity
                     break;
                 case Constants.INTENT_VAL_EDITPROC_IMPORT:
                     //ここにplain-textを読み込む処理を入れる
-                    String importFilePath;
-                    importFilePath = fileNameBody;
-                    fileNameBody = "importedFile01";
+                    String importFilePath = intent.getStringExtra(Constants.INTENT_KEY_IMPORTPATH);
+                    //importFilePath = fileNameBody;
+                    //fileNameBody = "importedFile01";
                     content = loadFileRaw(importFilePath);
                     break;
             }
@@ -231,7 +232,7 @@ public class EditText02Activity extends AppCompatActivity
     @Override
     public void onDialogNegativeClick(DialogFragment dialog) {
         Log.d(Constants.LOG_TAG, "EditText02Activity.onDialogNegativeClick start.");
-        finish();
+        //finish();
     }
 
 }

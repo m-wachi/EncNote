@@ -6,8 +6,9 @@ package com.mstkwch.encnote;
 public class Constants {
     public static final String DEFAULT_FILE_EXT = "encn";
 
-    public static final String INTENT_KEY_FILENAME = "com.example.mstkwachi.testapp03.file";
-    public static final String INTENT_KEY_EDITPROC = "com.example.mstkwachi.testapp03.editProc";
+    public static final String INTENT_KEY_FILENAME = "com.mstkwch.encnote.file";
+    public static final String INTENT_KEY_EDITPROC = "com.mstkwch.encnote.editProc";
+    public static final String INTENT_KEY_IMPORTPATH = "com.mstkwch.encnote.importpath";
 
     public static final int INTENT_VAL_EDITPROC_NEW = 1;
     public static final int INTENT_VAL_EDITPROC_OPEN = 2;

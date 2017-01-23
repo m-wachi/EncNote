@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">EncNote</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_edit_text02">EditText02Activity</string>
+    <string name="title_activity_edit_text02">Edit Text</string>
     <string name="title_activity_edit_text03">EditText03Activity</string>
 </resources>
