@@ -2,6 +2,7 @@ package com.mstkwch.encnote;
 
 import android.app.DialogFragment;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
@@ -28,7 +29,7 @@ public class NoteListActivity extends AppCompatActivity
     private int selectedMenuId;
     static final int REQ_CODE = 123;
 
-    private String importFilePath = "";
+    private Uri importFileUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +99,7 @@ public class NoteListActivity extends AppCompatActivity
             Log.d(Constants.LOG_TAG, "menu import01 click.");
 
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-            intent.setType("file/*");
+            intent.setType("text/plain");
             startActivityForResult(intent, REQ_CODE);
 
             //exportToFile();
@@ -164,22 +165,16 @@ public class NoteListActivity extends AppCompatActivity
 
         if (requestCode == REQ_CODE ) {
             if (resultCode == RESULT_OK) {
-                String s = data.getDataString();
 
-                //file://を外す処理を組み込む
-                importFilePath = s;
-                Log.d(Constants.LOG_TAG, "data.getDataString()=" + importFilePath);
+                Uri uri = data.getData();
 
+                importFileUri = uri;
+
+                Log.d(Constants.LOG_TAG, "data.getData().getPath()=" + uri.getPath());
+
+                //タイトル編集画面を表示
                 EditFileNameDialogFragment dialog = new EditFileNameDialogFragment();
                 dialog.show(getFragmentManager(), "EditFileNameDialogFragment");
-
-                /*
-                String importFilePath = "/mnt/sdcard/Download/importTest01.txt";
-                Intent intent = new Intent(NoteListActivity.this, EditText02Activity.class);
-                intent.putExtra(Constants.INTENT_KEY_FILENAME, importFilePath);
-                intent.putExtra(Constants.INTENT_KEY_EDITPROC, Constants.INTENT_VAL_EDITPROC_IMPORT);
-                startActivity(intent);
-                */
 
             }
         }
@@ -237,10 +232,9 @@ public class NoteListActivity extends AppCompatActivity
                 intent.putExtra(Constants.INTENT_KEY_EDITPROC, Constants.INTENT_VAL_EDITPROC_NEW);
                 break;
             case R.id.import01:
-                //String importFilePath = "/mnt/sdcard/Download/importTest01.txt";
                 intent.putExtra(Constants.INTENT_KEY_FILENAME, fileNameBody);
                 intent.putExtra(Constants.INTENT_KEY_EDITPROC, Constants.INTENT_VAL_EDITPROC_IMPORT);
-                intent.putExtra(Constants.INTENT_KEY_IMPORTPATH, importFilePath);
+                intent.putExtra(Constants.INTENT_KEY_IMPORTPATH, importFileUri);
                 break;
         }
 

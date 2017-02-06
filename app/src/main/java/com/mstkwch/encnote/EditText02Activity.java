@@ -2,6 +2,7 @@ package com.mstkwch.encnote;
 
 import android.app.DialogFragment;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
@@ -19,6 +20,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
@@ -61,10 +63,13 @@ public class EditText02Activity extends AppCompatActivity
                     break;
                 case Constants.INTENT_VAL_EDITPROC_IMPORT:
                     //ここにplain-textを読み込む処理を入れる
-                    String importFilePath = intent.getStringExtra(Constants.INTENT_KEY_IMPORTPATH);
+                    //String importFilePath = intent.getStringExtra(Constants.INTENT_KEY_IMPORTPATH);
+                    //Uri importFileUri = (Uri) intent.getSerializableExtra(Constants.INTENT_KEY_IMPORTPATH);
+                    Uri importFileUri = (Uri)intent.getParcelableExtra(Constants.INTENT_KEY_IMPORTPATH);
                     //importFilePath = fileNameBody;
                     //fileNameBody = "importedFile01";
-                    content = loadFileRaw(importFilePath);
+                    //content = loadFileRaw(importFilePath);
+                    content = loadFileRaw(importFileUri);
                     break;
             }
 //            if (editProc == Constants.INTENT_VAL_EDITPROC_OPEN) {
@@ -126,8 +131,9 @@ public class EditText02Activity extends AppCompatActivity
 
 
     /**
-     * @param filePath
-     * @return
+     * ファイルよりデータを読み込む(ファイルパス指定版)
+     * @param filePath 読み込むファイルのパス
+     * @return ファイルの中身
      * @throws Exception
      */
     private String loadFileRaw(String filePath) throws Exception {
@@ -135,6 +141,33 @@ public class EditText02Activity extends AppCompatActivity
         FileInputStream fis = new FileInputStream(file);
 
         InputStreamReader isr = new InputStreamReader(fis, "UTF-8");
+
+        return loadFileRaw(isr);
+    }
+
+    /**
+     * ファイルよりデータを読み込む(Uri指定版)
+     * @param uri 読み込むファイルのUri
+     * @return ファイルの中身
+     * @throws Exception
+     */
+    private String loadFileRaw(Uri uri) throws Exception {
+
+        InputStream is = getContentResolver().openInputStream(uri);
+
+        InputStreamReader isr = new InputStreamReader(is);
+
+        return loadFileRaw(isr);
+    }
+
+    /**
+     * ファイルよりデータを読み込む(サブルーチン)
+     * @param isr
+     * @return ファイルの中身
+     * @throws Exception
+     */
+    private String loadFileRaw(InputStreamReader isr) throws Exception {
+
         BufferedReader br = new BufferedReader(isr);
 
         char[] buff = new char[1024];
@@ -150,37 +183,20 @@ public class EditText02Activity extends AppCompatActivity
         br.close();
 
         return strBuff.toString();
+
     }
 
+    /**
+     * 暗号化されたファイルの読み込み
+     * @param filename 読み込むファイルのパス
+     * @return 復号化されたファイルの中身
+     * @throws Exception
+     */
     private String loadEncFile(String filename) throws Exception {
 
         String filePath = Environment.getExternalStorageDirectory() + "/" + Constants.BASE_DATA_DIR + "/" + filename;
 
-        //RAISE EXCEPTION NO_SUCH_FIELD_ERROR
-        //File exPubDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
-        //Log.d(Constants.LOG_TAG, "exPubDir=" + exPubDir.getAbsolutePath());
-
-        /*
-        File file = new File(filePath);
-        FileInputStream fis = new FileInputStream(file);
-
-        InputStreamReader isr = new InputStreamReader(fis, "UTF-8");
-        BufferedReader br = new BufferedReader(isr);
-
-        char[] buff = new char[1024];
-
-        int retRead;
-        StringBuffer strBuff = new StringBuffer();
-
-        retRead = br.read(buff, 0, 1024);
-        while(0 <= retRead) {
-            strBuff.append(buff, 0, retRead);
-            retRead = br.read(buff, 0, 1024);
-        }
-        br.close();
-        */
         String encContents = loadFileRaw(filePath);
-
 
         //String deStr = MyCrypto.decrypt(SEED, strBuff.toString());
         MyCrypto2 crypt = new MyCrypto2(SEED);
